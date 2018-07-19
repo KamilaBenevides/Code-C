@@ -26,11 +26,13 @@ void pop(stack* pilha)
 	if(pilha -> size)
 	pilha -> size -= 1;
 }
-
+int top(stack* pilha)
+{
+	return pilha -> numb[pilha -> size-1];
+}
 int main() 
 {
-	stack* parentes = creat();
-	stack* cochetes = creat();
+	stack* balanceia = creat();
 	char expressao[100];
 	int tam, i;
 
@@ -39,14 +41,24 @@ int main()
 
 	for(i = 0 ; i < tam ; i++)
 	{
-		if(expressao[i] == '(') push(parentes, expressao[i]);
-		if(expressao[i] == '[') push(cochetes, expressao[i]);
+		if(expressao[i] == '(') push(balanceia, expressao[i]);
+		if(expressao[i] == '[') push(balanceia, expressao[i]);
+		if(expressao[i] == '{') push(balanceia, expressao[i]);
 
-		if(expressao[i] == ')') pop(parentes);
-		if(expressao[i] == ']') pop(cochetes);
+		if(expressao[i] == ')' && top(balanceia) == '(') pop(balanceia);
+
+		else if(expressao[i] == ')' && top(balanceia) != '(') push(balanceia, '0');
+
+		if(expressao[i] == ']' && top(balanceia) == '[') pop(balanceia);
+
+		else if(expressao[i] == ']' && top(balanceia) != '[') push(balanceia, '0');
+
+		if(expressao[i] == '}' && top(balanceia) == '{') pop(balanceia);
+
+		else if(expressao[i] == '}' && top(balanceia) != '{') push(balanceia, '0');
 	}
 
-	if(!parentes -> size && !cochetes -> size) puts("BALANCEADO");
+	if(!balanceia -> size) puts("BALANCEADO");
 	
 	else puts("NAO BALANCEADO");
 
